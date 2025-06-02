@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu OS Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-container">
+        <div id="top-bar">
+            <div class="left-section">
+                <span>Activities</span>
+            </div>
+            <div class="center-section">
+                <span id="current-time"></span> <!-- Time will be updated by JS -->
+            </div>
+            <div class="right-section">
+                <span>EN</span> <!-- Placeholder for language/keyboard -->
+                <span>🔊</span> <!-- Placeholder for volume -->
+                <span>🔋</span> <!-- Placeholder for power -->
+                <span>⚙️</span> <!-- Placeholder for settings -->
+            </div>
+        </div>
+        <div id="content-area"> <!-- New wrapper for launcher and desktop -->
+            <div id="launcher">
+                <div class="launcher-icon"><span>🌐</span></div> <!-- Browser icon placeholder -->
+                <div class="launcher-icon"><span>📁</span></div> <!-- Files icon placeholder -->
+                <div class="launcher-icon"><span>⚙️</span></div> <!-- Settings icon placeholder -->
+                <div class="launcher-icon"><span>🛒</span></div> <!-- Store icon placeholder -->
+                <div id="minimized-dock">
+                    <!-- Minimized window titles will appear here -->
+                </div>
+            </div>
+            <div id="desktop">
+                <div id="icons-container">
+                    <div class="desktop-icon" id="file-manager-icon">
+                        <div class="icon-image">📁</div>
+                        <span class="icon-label">Files</span>
+                    </div>
+                    <div class="desktop-icon" id="terminal-icon">
+                        <div class="icon-image">🖥️</div>
+                        <span class="icon-label">Terminal</span>
+                    </div>
+                    <div class="desktop-icon" id="browser-icon">
+                        <div class="icon-image">🌐</div>
+                        <span class="icon-label">Browser</span>
+                    </div>
+                </div>
+                <div id="windows-container">
+                    <!-- Active windows will be appended here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Window Template (hidden by default) -->
+    <template id="window-template">
+        <div class="window">
+            <div class="title-bar">
+                <span class="title">Window Title</span>
+                <div class="window-controls">
+                    <button class="window-control minimize" aria-label="Minimize">-</button>
+                    <button class="window-control maximize" aria-label="Maximize">□</button>
+                    <button class="window-control close" aria-label="Close">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <!-- Application content goes here -->
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>

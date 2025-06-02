@@ -1,0 +1,464 @@
+body {
+    margin: 0;
+    font-family: "Ubuntu", Arial, sans-serif; /* Using Ubuntu font if available */
+    background-color: #111; /* Fallback background */
+    overflow: hidden; /* Prevent scrollbars */
+    color: #FFF; /* Default text color to white for dark themes */
+}
+
+/* Custom Scrollbars (Webkit-based browsers) */
+::-webkit-scrollbar {
+    width: 10px; /* Slightly wider for easier grabbing */
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1); /* Subtle track */
+}
+::-webkit-scrollbar-thumb {
+    background: #555; /* Darker thumb */
+    border-radius: 5px;
+    border: 2px solid transparent; /* Creates padding around thumb */
+    background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0); /* Transparent corner */
+}
+
+
+#main-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Stack top-bar and content-area vertically */
+}
+
+#top-bar {
+    width: 100%;
+    height: 30px; /* Standard height for a top bar */
+    background-color: #202020; /* Dark background */
+    color: #E0E0E0; /* Light grey text */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    font-size: 0.9em;
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure top-bar uses the OS font */
+}
+
+#top-bar .left-section,
+#top-bar .center-section,
+#top-bar .right-section {
+    display: flex;
+    align-items: center;
+}
+
+#top-bar .right-section span {
+    margin-left: 15px;
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure top-bar icons/text use the OS font */
+}
+
+#content-area {
+    display: flex;
+    flex-grow: 1; /* Takes remaining height */
+    height: calc(100vh - 30px); /* Adjust height considering top-bar */
+}
+
+/* This is the correct #launcher block after merge */
+#launcher {
+    width: 60px; /* Standard width for a launcher */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark, slightly transparent background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px; /* Space for icons at the top */
+    padding-bottom: 5px; /* Space for dock at the bottom */
+    box-sizing: border-box;
+    justify-content: space-between; /* Pushes dock to bottom */
+}
+
+.launcher-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.08); /* Slightly more subtle background */
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px; /* Size of the emoji/icon font */
+    cursor: pointer;
+    position: relative; /* For pseudo-elements like notification dots */
+    transition: background-color 0.15s ease-in-out;
+}
+
+/* Small dot indicator - can be tied to app state later */
+/* Example: .launcher-icon.is-active::before { opacity: 1; } */
+.launcher-icon::before {
+    content: '';
+    position: absolute;
+    bottom: 5px; /* Position at bottom-center */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.7); /* White dot */
+    border-radius: 50%;
+    opacity: 0; /* Hidden by default, shown on .is-active or similar */
+    transition: opacity 0.2s ease-in-out;
+}
+/* Example to show:
+.launcher-icon.is-active::before,
+.launcher-icon:hover::before {
+    opacity: 1;
+}
+*/
+
+.launcher-icon:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#minimized-dock {
+    width: 100%;
+    padding: 5px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.minimized-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFF;
+    padding: 5px;
+    margin-top: 5px;
+    width: 90%;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.7em;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.minimized-item:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+#desktop {
+    flex-grow: 1; /* Takes remaining width */
+    height: 100%;
+    position: relative; /* For positioning icons and windows */
+    background-image: url('https://placekitten.com/1920/1080'); /* Placeholder kitten wallpaper */
+    background-size: cover;
+    background-position: center;
+}
+
+#icons-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column; /* Stack icons vertically */
+    align-items: center; /* Center icons if they have different widths */
+    padding: 10px;
+}
+
+.desktop-icon {
+    width: 80px; /* Width of the icon */
+    margin-bottom: 20px; /* Space below each icon */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.desktop-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Slight highlight on hover */
+}
+
+.desktop-icon.selected {
+    background-color: rgba(255, 255, 255, 0.2); /* Different background for selected */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 4px; /* Adjust padding to account for border */
+}
+
+.desktop-icon .icon-image {
+    font-size: 40px; /* Size of the icon image/emoji */
+    margin-bottom: 5px;
+}
+
+.desktop-icon .icon-label {
+    font-size: 0.85em;
+    color: #FFFFFF;
+    word-wrap: break-word; /* Wrap long labels */
+    max-width: 100%; /* Ensure label does not overflow icon width */
+    line-height: 1.2;
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure icon labels use the OS font */
+}
+
+#windows-container {
+    width: 100%;
+    height: 100%;
+    position: relative; /* Needed for absolute positioning of windows within it */
+}
+
+/* Window Styling */
+.window {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background-color: #3D3D3D; /* Dark background for window */
+    border: 1px solid #282828; /* Darker border for more contrast */
+    border-radius: 6px 6px 0 0; /* Slightly smaller radius for a sharper look */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* Softer, more diffused shadow */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents content from spilling out before resize handles are added */
+    min-width: 200px; /* Minimum dimensions */
+    min-height: 150px;
+    z-index: 10; /* Default z-index for windows */
+}
+
+.window.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 60px) !important; /* Full width minus launcher */
+    height: calc(100vh - 30px) !important; /* Full height minus top-bar */
+    border-radius: 0;
+    z-index: 200 !important; /* Ensure maximized window is on top */
+}
+
+.title-bar {
+    height: 30px;
+    background-color: #2C2C2C; /* Slightly darker title bar */
+    color: #E0E0E0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    cursor: move; /* For dragging */
+    border-bottom: 1px solid #202020;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.title-bar .title {
+    font-weight: bold;
+    font-size: 0.9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure window title uses the OS font */
+}
+
+.window-controls {
+    display: flex;
+}
+
+.window-control {
+    background: none;
+    border: none;
+    color: #E0E0E0;
+    font-size: 16px; /* Keep size consistent */
+    width: 30px; /* Slightly wider for easier clicking */
+    height: 30px; /* Match title-bar height */
+    line-height: 30px; /* Center symbol vertically */
+    text-align: center;
+    cursor: pointer;
+    margin-left: 2px; /* Spacing between buttons */
+    border-radius: 3px; /* Subtle rounding */
+    transition: background-color 0.1s ease-in-out; /* Faster transition */
+}
+
+.window-control:hover {
+    background-color: rgba(255,255,255,0.25); /* Lighter hover for better visibility */
+}
+
+.window-control:active { /* Mousedown state */
+    background-color: rgba(0,0,0,0.3); /* Darker, more distinct active state */
+    /* transform: translateY(1px); Subtle press effect - removed if causing layout shifts */
+}
+
+.window-control.close:hover {
+    background-color: #E04343; /* Slightly less intense red */
+    color: #FFF;
+}
+.window-control.close:active {
+    background-color: #C03030; /* Darker red on active */
+    color: #FFF;
+}
+
+.window-content {
+    flex-grow: 1;
+    padding: 10px;
+    background-color: #F7F7F7; /* Slightly off-white for less glare */
+    color: #2C2C2C; /* Darker text for better readability */
+    overflow: auto; /* Add scrollbars if content overflows */
+    display: flex; /* Use flex for some app layouts */
+    flex-direction: column; /* Default for apps that might have headers/footers */
+    font-family: "Ubuntu", Arial, sans-serif; /* Default app content font */
+}
+
+/* --- File Manager Specific Styles --- */
+.file-manager-content {
+    display: flex;
+    flex-direction: row; /* Sidebar and main area side-by-side */
+    padding: 0; /* Remove default padding if controlling internally */
+    background-color: #FFFFFF; /* White background for file manager */
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure FM uses OS font */
+}
+
+.file-manager-sidebar {
+    width: 160px; /* Slightly wider sidebar */
+    background-color: #EDEDED; /* Lighter grey sidebar */
+    padding: 10px;
+    border-right: 1px solid #D0D0D0; /* Softer border */
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.file-manager-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-manager-sidebar li {
+    padding: 8px 12px; /* More padding */
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #333;
+    transition: background-color 0.15s ease;
+}
+
+.file-manager-sidebar li:hover {
+    background-color: #D5D5D5;
+}
+
+.file-manager-main {
+    flex-grow: 1;
+    padding: 10px;
+    display: flex; /* For aligning items, e.g., in a grid or list */
+    flex-wrap: wrap; /* Allow items to wrap */
+    align-content: flex-start; /* Align items to the start of the container */
+    overflow-y: auto;
+}
+
+.fm-item {
+    width: 80px; /* Icon size + padding */
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: "Ubuntu", Arial, sans-serif;
+}
+
+.fm-item:hover {
+    background-color: #E9E9E9;
+}
+
+.fm-item span {
+    display: block;
+}
+
+.fm-item span:first-child { /* Icon */
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+.fm-item-name {
+    font-size: 0.8em;
+    word-wrap: break-word;
+    color: #333;
+}
+
+
+/* --- Terminal Specific Styles --- */
+.terminal-content {
+    background-color: #1A1A1A; /* Slightly adjusted dark background */
+    color: #00FF41; /* Brighter green text */
+    font-family: 'Fira Code', 'Consolas', 'Droid Sans Mono', 'monospace', monospace; /* Prioritize modern mono fonts */
+    padding: 10px;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-output {
+    flex-grow: 1;
+    overflow-y: auto; /* if many lines */
+}
+
+.terminal-output p {
+    margin: 0 0 5px 0;
+    white-space: pre-wrap; /* Preserve whitespace */
+    font-size: 0.95em; /* Slightly larger terminal text */
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+}
+
+.terminal-input-line .prompt {
+    margin-right: 5px;
+    white-space: nowrap;
+    font-size: 0.95em; /* Match output text */
+}
+
+.terminal-input {
+    background: none;
+    border: none;
+    color: #00FF41; /* Match terminal text color */
+    font-family: 'Fira Code', 'Consolas', 'Droid Sans Mono', 'monospace', monospace; /* Match terminal content font */
+    flex-grow: 1;
+    outline: none; /* Remove default focus outline */
+    padding: 2px;
+    font-size: 0.95em; /* Match output text */
+}
+
+/* --- Browser Specific Styles --- */
+.browser-content {
+    padding: 0; /* Remove default padding */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Iframe handles its own scroll */
+    background-color: #FFF; /* White background for browser window */
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure browser UI uses OS font */
+}
+
+.browser-address-bar {
+    padding: 6px 8px; /* Slightly more padding */
+    background-color: #F0F0F0; /* Lighter address bar */
+    border-bottom: 1px solid #C8C8C8; /* Softer border */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.browser-address-bar input {
+    width: 100%;
+    padding: 5px 10px; /* More padding in input */
+    border: 1px solid #B0B0B0; /* Softer border for input */
+    border-radius: 4px; /* More rounded input */
+    box-sizing: border-box;
+    font-size: 0.9em;
+    font-family: "Ubuntu", Arial, sans-serif; /* Ensure address bar input uses OS font */
+}
+
+.browser-iframe {
+    width: 100%;
+    height: 100%; /* Will take remaining space due to flex-grow on .window-content */
+    border: none;
+    flex-grow: 1; /* Allow iframe to take available space */
+}
